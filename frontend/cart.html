@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodieHub Cart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f4f4;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: linear-gradient(to right, #ff4b2b, #f39c12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 50px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        .menu a:hover {
+            color: #fff3cd;
+        }
+
+        /* CART */
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            color: white;
+            background: #ff5722;
+        }
+
+        button:hover {
+            background: black;
+        }
+
+        .checkout {
+            background: #111;
+        }
+
+        /* POPUP */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-box {
+            background: white;
+            width: 350px;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .popup-box h2 {
+            color: #ff5722;
+            margin-bottom: 15px;
+        }
+
+        .popup-buttons {
+            margin-top: 20px;
+        }
+
+        .ok-btn {
+            background: #28a745;
+            margin-right: 10px;
+        }
+
+        .cancel-btn {
+            background: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo">🍔 FoodieHub</div>
+
+        <div class="menu">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="additem.html">Add Item</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="history.html">History</a>
+            <a href="about.html">About</a>
+            <a href="profile.html">Profile</a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </nav>
+
+    <!-- CART -->
+    <div class="container">
+
+        <h2>🛒 Your Cart</h2>
+
+        <div id="cartItems"></div>
+
+        <h3>Total: ₹<span id="total">0</span></h3>
+
+        <div class="actions">
+            <button class="checkout" onclick="checkout()">Checkout</button>
+        </div>
+
+    </div>
+
+    <!-- LOGIN POPUP -->
+    <!-- <div class="popup" id="loginPopup">
+        <div class="popup-box">
+            <h2>🔒 Login Required</h2>
+            <p>Please login first to continue checkout.</p>
+
+            <div class="popup-buttons">
+                <button class="ok-btn" onclick="goLogin()">OK</button>
+                <button class="cancel-btn" onclick="closePopup()">Cancel</button>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- <script>
+
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        function loadCart() {
+            let box = document.getElementById("cartItems");
+            let total = 0;
+
+            box.innerHTML = "";
+
+            if (cart.length === 0) {
+                box.innerHTML = "<p>Cart is empty 🛒</p>";
+                return;
+            }
+
+            cart.forEach(item => {
+                total += item.price;
+
+                box.innerHTML += `
+        <div class="item">
+            <span>${item.name}</span>
+            <span>₹${item.price}</span>
+        </div>
+        `;
+            });
+
+            document.getElementById("total").innerText = total;
+        }
+
+        function checkout() {
+
+            if (cart.length === 0) {
+                alert("Cart is empty!");
+                return;
+            }
+
+            document.getElementById("loginPopup").style.display = "flex";
+        }
+
+        function goLogin() {
+            window.location.href = "login.html";
+        }
+
+        function closePopup() {
+            document.getElementById("loginPopup").style.display = "none";
+        }
+
+        loadCart();
+
+    </script> -->
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        const loggedInUser = localStorage.getItem("loggedUser");
+
+        if (!loggedInUser) {
+            alert("Please login first!");
+            window.location.href = "login.html";
+        }
+
+        function loadCart() {
+            let box = document.getElementById("cartItems");
+            let total = 0;
+
+            box.innerHTML = "";
+
+            if (cart.length === 0) {
+                box.innerHTML = "<p>Cart is empty 🛒</p>";
+                return;
+            }
+
+            cart.forEach(item => {
+                total += item.price;
+                box.innerHTML += `
+                <div class="item">
+                    <span>${item.name}</span>
+                    <span>₹${item.price}</span>
+                </div>
+            `;
+            });
+
+            document.getElementById("total").innerText = total;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Cart is empty!");
+                return;
+            }
+
+            // ✅ Check if user is logged in
+            // const loggedInUser = localStorage.getItem("loggedUser");
+
+            if (!loggedInUser) {
+                alert("Please login first!");
+                window.location.href = "login.html";
+            } else {
+                // Already logged in → go straight to checkout
+                window.location.href = "checkout.html";
+            }
+        }
+
+        function goLogin() {
+            window.location.href = "login.html";
+        }
+
+        function closePopup() {
+            document.getElementById("loginPopup").style.display = "none";
+        }
+
+        loadCart();
+    </script>
+
+</body>
+
+</html>

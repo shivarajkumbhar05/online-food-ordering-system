@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodieHub Checkout</title>
+
+    <style>
+        /* RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            background: #f4f4f4;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: linear-gradient(to right, #ff4b2b, #ff9800);
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* FORM */
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            outline: none;
+        }
+
+        /* ITEM */
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* TOTAL */
+        .total {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        /* BUTTON */
+        button {
+            /* width: 100%; */
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #ff5722;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: black;
+        }
+
+        .section-title {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: gray;
+            padding: 10px;
+        }
+
+        .btns{
+            display: inline;
+            margin-left: 290px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+
+        <div class="logo">🍔 FoodieHub</div>
+
+        <div class="menu">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="additem.html">Add Item</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="history.html">History</a>
+            <a href="about.html">About Us</a>
+            <a href="profile.html">Profile</a>
+            <a href="logout.html">Logout</a>
+        </div>
+
+    </nav>
+
+    <!-- CHECKOUT -->
+    <div class="container">
+
+        <h2>🧾 Checkout</h2>
+
+        <!-- USER INFO -->
+        <div class="section-title">👤 Customer Details</div>
+
+        <input id="name" type="text" placeholder="Full Name">
+        <input id="phone" type="text" placeholder="Phone Number">
+        <textarea id="address" rows="3" placeholder="Full Address"></textarea>
+        <input id="city" type="text" placeholder="City">
+        <input id="pincode" type="text" placeholder="Pincode">
+
+        <!-- ORDER ITEMS -->
+        <div class="section-title">🛒 Order Items</div>
+        <div id="items"></div>
+
+        <div class="total">Total: ₹<span id="total">0</span></div>
+
+        <div class="btns">
+            <button class="btn" onclick="placeOrder()">Place Order</button>
+            <button class="btn" onclick="cancelordeer()">Cancel Order</button>
+        </div>
+
+    </div>
+
+    <script>
+
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const loggedInUser = localStorage.getItem("loggedUser");
+
+        if (!loggedInUser) {
+            alert("Please login first!");
+            window.location.href = "login.html";
+        }
+        let total = 0;
+
+        function loadCart() {
+
+            let box = document.getElementById("items");
+            box.innerHTML = "";
+            total = 0;
+
+            if (cart.length === 0) {
+                box.innerHTML = "<p class='empty'>Cart is empty 🛒</p>";
+                return;
+            }
+
+            cart.forEach(item => {
+                total += item.price;
+
+                box.innerHTML += `
+        <div class="item">
+            <span>${item.name}</span>
+            <span>₹${item.price}</span>
+        </div>`;
+            });
+
+            document.getElementById("total").innerText = total;
+        }
+
+        function placeOrder() {
+
+            // VALIDATION
+            let name = document.getElementById("name").value;
+            let phone = document.getElementById("phone").value;
+            let address = document.getElementById("address").value;
+            let city = document.getElementById("city").value;
+            let pincode = document.getElementById("pincode").value;
+
+            if (!name || !phone || !address || !city || !pincode) {
+                alert("Please fill all details!");
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert("Cart is empty!");
+                return;
+            }
+
+            // ✅ NEW: get logged in user's email
+            const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+
+            let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+            let newOrder = {
+                id: "ORD" + Math.floor(Math.random() * 10000),
+                customer: {
+                    name, phone, address, city, pincode,
+                    email: loggedUser ? loggedUser.email : ""  // ✅ NEW: save email
+                },
+                items: cart,
+                total: total,
+                status: "Pending",
+                date: new Date().toLocaleDateString()           // ✅ NEW: save date
+            };
+
+            orders.push(newOrder);
+
+            localStorage.setItem("orders", JSON.stringify(orders));
+            localStorage.removeItem("cart");
+
+            alert("Order Placed Successfully!");
+
+            window.location.href = "history.html";
+        }
+
+        loadCart();
+
+    </script>
+
+</body>
+
+</html>

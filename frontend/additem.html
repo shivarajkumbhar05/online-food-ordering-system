@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Item - FoodieHub</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial;
+
+    /* 🍕 DIFFERENT FOOD BACKGROUND IMAGE */
+    background: url("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe")
+    no-repeat center center/cover;
+}
+
+/* DARK OVERLAY */
+body::before{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.55);
+    z-index:-1;
+}
+
+/* NAVBAR */
+header {
+    background: linear-gradient(90deg, #ff512f, #f09819);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+/* CONTAINER */
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.95);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    max-width: 700px;
+    margin: auto;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px;
+    background: #ff512f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background: black;
+}
+
+/* FOOD LIST CARD */
+.food-item {
+    display: flex;
+    gap: 15px;
+    background: #fff;
+    padding: 10px;
+    margin-top: 10px;
+    border-left: 5px solid #ff512f;
+    box-shadow: 0 2px 8px #ddd;
+    align-items: center;
+}
+
+.food-item img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>🍔 FoodieHub</h2>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="additem.html">Add Item</a>
+        <a href="cart.html">Cart</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="history.html">History</a>
+        <a href="about.html">About Us</a>
+        <a href="profile.html">Profile</a>
+        <a href="logout.html">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Add Food Item 🍕</h2>
+
+<input type="text" id="name" placeholder="Food Name">
+<input type="number" id="price" placeholder="Price">
+<textarea id="desc" placeholder="Food Description"></textarea>
+
+<input type="text" id="image" placeholder="Image URL (paste link)">
+
+<button onclick="addItem()">Add Item</button>
+
+<hr>
+
+<h3>Available Items</h3>
+<div id="list"></div>
+
+</div>
+</div>
+
+<script>
+
+let items = JSON.parse(localStorage.getItem("items")) || [];
+
+// render items
+function renderItems() {
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+
+    items.forEach((item) => {
+        list.innerHTML += `
+        <div class="food-item">
+            <img src="${item.image}" alt="food">
+            <div>
+                <h4>${item.name} - ₹${item.price}</h4>
+                <p>${item.desc}</p>
+            </div>
+        </div>
+        `;
+    });
+}
+
+// add item
+function addItem() {
+    let name = document.getElementById("name").value;
+    let price = document.getElementById("price").value;
+    let desc = document.getElementById("desc").value;
+    let image = document.getElementById("image").value;
+
+    if(name === "" || price === "" || image === "") {
+        alert("Please fill all required fields");
+        return;
+    }
+
+    items.push({ name, price, desc, image });
+
+    localStorage.setItem("items", JSON.stringify(items));
+
+    renderItems();
+
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("desc").value = "";
+    document.getElementById("image").value = "";
+}
+
+renderItems();
+
+</script>
+
+</body>
+</html>

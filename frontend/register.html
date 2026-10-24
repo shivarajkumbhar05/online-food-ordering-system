@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FoodieHub Register</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#ff5722,#ff9800);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+
+.register-box{
+
+    width:400px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+}
+
+
+h2{
+
+text-align:center;
+color:#ff5722;
+margin-bottom:20px;
+
+}
+
+
+input{
+
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:15px;
+
+}
+
+
+button{
+
+width:100%;
+padding:12px;
+background:#ff5722;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+
+}
+
+
+button:hover{
+
+background:#e64a19;
+
+}
+
+
+p{
+
+margin-top:15px;
+text-align:center;
+
+}
+
+
+a{
+
+color:#ff5722;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<a href="index.html">
+<button style="position:absolute;top:20px;left:20px;width:100px;">
+Home
+</button>
+</a>
+
+
+
+<div class="register-box">
+
+
+<h2>🍔 FoodieHub Register</h2>
+
+
+
+<input 
+type="text"
+id="name"
+placeholder="Full Name">
+
+
+
+<input
+type="email"
+id="email"
+placeholder="Email">
+
+
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+
+
+<button onclick="register()">
+Register
+</button>
+
+
+<p>
+Already have an account?
+<a href="login.html">Login</a>
+</p>
+
+
+
+</div>
+
+
+
+
+<script src="config.js"></script>
+<script>
+
+
+async function register(){
+
+
+    const name =
+    document.getElementById("name").value.trim();
+
+
+    const email =
+    document.getElementById("email").value.trim();
+
+
+    const password =
+    document.getElementById("password").value.trim();
+
+
+
+    // frontend check
+
+    if(
+        name === "" ||
+        email === "" ||
+        password === ""
+    ){
+
+        alert("All fields are required");
+        return;
+
+    }
+
+
+
+    try{
+
+
+        const response = await fetch(
+            `${window.APP_CONFIG.API_BASE}/auth/register`,
+            {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+
+            body:JSON.stringify({
+
+                name:name,
+                email:email,
+                password:password
+
+            })
+
+        });
+
+
+
+        const result = await response.json();
+
+
+
+        console.log(result);
+
+
+
+        if(response.ok){
+
+
+            alert(
+            "Registration Successful 🎉"
+            );
+
+
+            window.location.href =
+            "login.html";
+
+
+        }
+        else{
+
+
+            alert(
+            result.message ||
+            "Registration failed"
+            );
+
+
+        }
+
+
+
+    }
+
+    catch(error){
+
+
+        console.log(error);
+
+
+        alert(
+        "Backend server is not running"
+        );
+
+
+    }
+
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoodieHub Login</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#ff5722,#ff9800);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.login-box{
+    width:400px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+h2{
+    text-align:center;
+    color:#ff5722;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#ff5722;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#e64a19;
+}
+
+p{
+    text-align:center;
+    margin-top:15px;
+}
+
+a{
+    color:#ff5722;
+    text-decoration:none;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="login-box">
+
+    <h2>🍔 FoodieHub Login</h2>
+
+    <input type="email" id="email" placeholder="Email">
+
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">
+        Login
+    </button>
+
+    <p>
+        New User?
+        <a href="register.html">Register</a>
+    </p>
+
+</div>
+
+<script>
+function login(){
+
+    let email =
+    document.getElementById("email").value.trim();
+
+    let password =
+    document.getElementById("password").value.trim();
+
+    let user =
+    JSON.parse(localStorage.getItem("foodieUser"));
+
+    if(!user){
+        alert("Please Register First");
+        return;
+    }
+
+    if(user.email===email &&
+       user.password===password){
+
+        localStorage.setItem(
+            "loggedUser",
+            JSON.stringify(user)
+        );
+
+        alert("Login Successful");
+
+      window.location.href = "admindashbord.html";
+    }
+    else{
+        alert("Invalid Email or Password");
+    }
+}
+</script>
+
+</body>
+</html>

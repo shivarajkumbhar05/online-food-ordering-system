@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoodieHub India</title>
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+/* BACKGROUND */
+body{
+    background:linear-gradient(-45deg,#ff4b2b,#ff9800,#ff416c,#a18cd1);
+    background-size:400% 400%;
+    animation:bg 12s ease infinite;
+    min-height:100vh;
+}
+
+/* NAVBAR */
+nav{
+    background:#ff5722;
+    padding:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    margin:0 10px;
+    font-weight:bold;
+}
+
+/* STATE SELECT */
+.topbar{
+    display:flex;
+    justify-content:flex-end;
+    padding:15px 20px;
+}
+
+select{
+    padding:12px;
+    width:220px;
+    border-radius:25px;
+    border:none;
+    outline:none;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* TITLE */
+.title{
+    text-align:center;
+    color:white;
+    margin:10px;
+    font-size:28px;
+}
+
+/* SEARCH */
+.search{
+    text-align:center;
+    margin:10px;
+}
+
+.search input{
+    width:60%;
+    padding:12px;
+    border-radius:20px;
+    border:none;
+    outline:none;
+}
+
+/* GRID */
+.products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    padding:15px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    border-radius:15px;
+    padding:10px;
+    text-align:center;
+    box-shadow:0 5px 10px rgba(0,0,0,0.3);
+}
+
+.card img{
+    width:100%;
+    height:130px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.card h3{
+    font-size:15px;
+    margin:8px 0;
+}
+
+.card p{
+    color:green;
+    font-weight:bold;
+}
+
+button{
+    background:#ff5722;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:black;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+
+    <div class="logo">🍔 FoodieHub</div>
+
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="additem.html">Add Item</a>
+        <a href="cart.html">Cart</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="history.html">History</a>
+        <a href="about.html">About Us</a>
+        <a href="profile.html">Profile</a>
+        <a href="logout.html">Logout</a>
+    </div>
+
+</nav>
+
+<!-- STATE SELECT -->
+<div class="topbar">
+
+<select id="stateSelect" onchange="loadState()">
+
+<option value="Maharashtra">Maharashtra</option>
+<option value="Punjab">Punjab</option>
+<option value="Gujarat">Gujarat</option>
+<option value="Rajasthan">Rajasthan</option>
+<option value="Kerala">Kerala</option>
+<option value="Tamil Nadu">Tamil Nadu</option>
+<option value="Karnataka">Karnataka</option>
+<option value="West Bengal">West Bengal</option>
+<option value="Goa">Goa</option>
+
+</select>
+
+</div>
+
+<h1 class="title" id="title">Maharashtra Foods</h1>
+
+<div class="search">
+<input id="search" placeholder="Search food..." onkeyup="render()">
+</div>
+
+<div class="products" id="box"></div>
+
+<script>
+
+/* ===== 50+ FOODS DATA ===== */
+
+const baseFoods = {
+
+"Maharashtra":[
+"Vada Pav","Misal Pav","Pav Bhaji","Puran Poli","Sabudana Vada",
+"Thalipeeth","Batata Vada","Modak","Zunka Bhakri","Kothimbir Vadi",
+"Bombil Fry","Kolhapuri Chicken","Bhakri","Sol Kadhi","Shrikhand"
+],
+
+"Punjab":[
+"Chole Bhature","Butter Chicken","Amritsari Kulcha","Dal Makhani","Sarson Da Saag",
+"Makki Roti","Aloo Paratha","Lassi","Rajma Chawal","Paneer Tikka",
+"Tandoori Chicken","Butter Naan","Shahi Paneer","Kadhi Pakora","Chicken Tikka"
+],
+
+"Gujarat":[
+"Dhokla","Khandvi","Thepla","Fafda","Handvo",
+"Undhiyu","Dabeli","Khakhra","Sev Tameta","Gujarati Thali",
+"Patra","Bhel","Muthiya","Dal Dhokli","Khaman"
+],
+
+"Rajasthan":[
+"Dal Baati Churma","Gatte Ki Sabzi","Ker Sangri","Laal Maas","Bajra Roti",
+"Pyaaz Kachori","Mirchi Bada","Mawa Kachori","Ghevar","Moong Dal Halwa",
+"Rabri","Churma Ladoo","Bikaneri Bhujia","Malpua","Ker Sangri Curry"
+],
+
+"Kerala":[
+"Sadya","Appam","Puttu Kadala","Fish Curry","Malabar Biryani",
+"Parotta","Avial","Prawn Curry","Banana Chips","Sambar",
+"Idiyappam","Beef Fry","Thoran","Kappa","Payasam"
+],
+
+"Tamil Nadu":[
+"Dosa","Idli","Vada","Pongal","Uttapam",
+"Chettinad Chicken","Sambar","Rasam","Curd Rice","Biryani",
+"Kothu Parotta","Murukku","Filter Coffee","Upma","Rava Dosa"
+],
+
+"Karnataka":[
+"Mysore Masala Dosa","Bisi Bele Bath","Ragi Mudde","Neer Dosa","Udupi Sambar",
+"Kesari Bath","Akki Roti","Obbattu","Chitranna","Puliyogare",
+"Maddur Vada","Benne Dosa","Ragi Roti","Tomato Bath","Holige"
+],
+
+"West Bengal":[
+"Rasgulla","Sandesh","Macher Jhol","Mishti Doi","Kathi Roll",
+"Shorshe Ilish","Luchi","Aloo Posto","Kosha Mangsho","Begun Bhaja",
+"Chingri Curry","Panta Bhat","Rosogolla","Fish Fry","Payesh"
+],
+
+"Goa":[
+"Fish Curry","Prawn Balchao","Vindaloo","Xacuti","Bebinca",
+"Sannas","Crab Curry","Recheado","Goan Rice","Sorpotel",
+"Prawn Fry","Chicken Cafreal","Bolinhas","Kismur","Ambot Tik"
+]
+
+};
+
+/* IMAGE FUNCTION */
+function img(food){
+return `https://source.unsplash.com/400x300/?${food},indian-food`;
+}
+
+/* MENU BUILD */
+let menu = {};
+
+for(let state in baseFoods){
+menu[state] = baseFoods[state].map((food,i)=>({
+name: food,
+price: 80 + (i*10),
+img: img(food)
+}));
+}
+
+/* STATE LOAD */
+function loadState(){
+let state = document.getElementById("stateSelect").value;
+document.getElementById("title").innerText = state + " Foods";
+render(state);
+}
+
+/* RENDER */
+function render(state){
+
+if(!state){
+state = document.getElementById("stateSelect").value;
+}
+
+let search = document.getElementById("search").value.toLowerCase();
+let box = document.getElementById("box");
+
+box.innerHTML = "";
+
+menu[state]
+.filter(f=>f.name.toLowerCase().includes(search))
+.forEach(f=>{
+
+box.innerHTML += `
+<div class="card">
+<img src="${f.img}">
+<h3>${f.name}</h3>
+<p>₹${f.price}</p>
+<button onclick="addCart('${f.name}',${f.price})">Add</button>
+</div>
+`;
+
+});
+
+}
+
+/* CART */
+function addCart(name,price){
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+cart.push({name,price});
+localStorage.setItem("cart",JSON.stringify(cart));
+alert(name + " added to cart");
+}
+
+/* INIT */
+window.onload = ()=>{
+document.getElementById("stateSelect").value = "Maharashtra";
+loadState();
+};
+
+</script>
+
+</body>
+</html>

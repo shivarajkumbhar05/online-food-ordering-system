@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order History - FoodieHub</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#fff7ed;
+}
+
+/* NAVBAR */
+nav{
+    background:linear-gradient(90deg,#ff512f,#f09819);
+    padding:18px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+    flex-wrap:wrap;
+}
+
+nav h2{
+    font-size:24px;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    margin:0 10px;
+    font-weight:bold;
+}
+
+.menu a:hover{
+    text-decoration:underline;
+}
+
+/* CONTAINER */
+.container{
+    padding:30px;
+    display:flex;
+    justify-content:center;
+}
+
+/* CARD */
+.card{
+    width:95%;
+    max-width:1100px;
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* TITLE */
+.title{
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    color:#ff512f;
+    margin-bottom:20px;
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#ff512f;
+    color:white;
+    padding:14px;
+}
+
+td{
+    text-align:center;
+    padding:14px;
+    border-bottom:1px solid #eee;
+}
+
+.empty{
+    text-align:center;
+    color:gray;
+    padding:20px;
+}
+
+/* STATUS */
+.status{
+    padding:6px 12px;
+    border-radius:20px;
+    color:white;
+    font-size:13px;
+}
+
+.pending{
+    background:orange;
+}
+
+.delivered{
+    background:green;
+}
+
+.cancelled{
+    background:red;
+}
+
+/* BUTTON */
+.clearBtn{
+    margin-top:20px;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:#ff512f;
+    color:white;
+    cursor:pointer;
+}
+
+.clearBtn:hover{
+    background:black;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <h2>🍔 FoodieHub</h2>
+
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="additem.html">Add Item</a>
+        <a href="cart.html">Cart</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="history.html">History</a>
+        <a href="profile.html">Profile</a>
+        <a href="logout.html">Logout</a>
+    </div>
+</nav>
+
+<!-- HISTORY -->
+<div class="container">
+
+    <div class="card">
+
+        <div class="title">📜 Order History</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Food Items</th>
+                    <th>Total</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="historyData">
+
+            </tbody>
+
+        </table>
+
+        <center>
+            <button class="clearBtn" onclick="clearHistory()">
+                Clear History
+            </button>
+        </center>
+
+    </div>
+
+</div>
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let historyBox = document.getElementById("historyData");
+
+function loadHistory(){
+
+    // Get latest orders from localStorage in real time
+    orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    historyBox.innerHTML = "";
+
+    if(orders.length === 0){
+
+        historyBox.innerHTML = `
+        <tr>
+            <td colspan="6" class="empty">
+                No Orders Found 🛒
+            </td>
+        </tr>`;
+        return;
+    }
+
+    orders.slice().reverse().forEach(order=>{
+
+        let foodNames = order.items.map(item => item.name).join(", ");
+
+        historyBox.innerHTML += `
+        <tr>
+            <td>${order.id}</td>
+            <td>${order.customer.name}</td>
+            <td>${foodNames}</td>
+            <td>₹${order.total}</td>
+
+            <td>
+                ${order.date || new Date().toLocaleString()}
+            </td>
+
+            <td>
+                <span class="status ${order.status.toLowerCase()}">
+                    ${order.status}
+                </span>
+            </td>
+        </tr>`;
+    });
+
+}
+
+function clearHistory(){
+
+    if(confirm("Are you sure to clear order history?")){
+        localStorage.removeItem("orders");
+        orders = [];
+        loadHistory();
+    }
+
+}
+
+// Real-time refresh every second
+// setInterval(loadHistory,1000);
+
+loadHistory();
+
+</script>
+
+
+</body>
+</html>
