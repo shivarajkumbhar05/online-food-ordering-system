@@ -33,7 +33,8 @@ const port = Number(process.env.PORT) || 5000;
 const app = express();
 app.set("trust proxy", 1); // running behind nginx / a platform load balancer
 
-const origins = (process.env.CORS_ORIGIN || "").split(",").map((s) => s.trim()).filter(Boolean);
+const defaultCorsOrigin = isProd ? "https://online-food-ordering-system-blond.vercel.app" : "";
+const origins = (process.env.CORS_ORIGIN || defaultCorsOrigin).split(",").map((s) => s.trim()).filter(Boolean);
 app.use(cors(origins.length ? { origin: origins } : undefined)); // no CORS_ORIGIN => allow all (dev)
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
