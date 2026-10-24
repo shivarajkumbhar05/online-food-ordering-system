@@ -1,7 +1,8 @@
 FROM nginx:1.27-alpine
 RUN rm -rf /usr/share/nginx/html/* /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY *.html config.js /usr/share/nginx/html/
+COPY *.html /usr/share/nginx/html/
+COPY public/config.js /usr/share/nginx/html/config.js
 COPY docker/40-write-config.sh /docker-entrypoint.d/40-write-config.sh
 RUN chmod +x /docker-entrypoint.d/40-write-config.sh
 EXPOSE 80
