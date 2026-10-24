@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const mongoose = require("mongoose");
 
 
 // ======================
@@ -16,20 +17,23 @@ exports.createPayment = async (req, res) => {
 
 
 
-        if (!orderId || !paymentMethod) {
+        if (typeof orderId !== "string" || !mongoose.isValidObjectId(orderId) || !paymentMethod) {
 
             return res.status(400).json({
 
-                message: "Order and payment method required"
+                message: "Valid order and payment method required"
 
             });
 
         }
 
+        if (!["COD", "ONLINE"].includes(paymentMethod)) {
+            return res.status(400).json({
+                message: "Invalid payment method"
+            });
+        }
 
-
-
-        const order = await Order.findById(orderId);
+        const order = await Order.findOne({ _id: orderId, user: req.user.id });
 
 
 
@@ -47,21 +51,20 @@ exports.createPayment = async (req, res) => {
 
 
 
-        order.paymentMethod = paymentMethod;
-
-
-        if (paymentMethod === "COD") {
-
-            order.paymentStatus = "Pending";
-
-        } else {
-
-            // online payment demo
-            order.paymentStatus = "Paid";
-
+        if (paymentMethod === "ONLINE") {
+            return res.status(501).json({
+                message: "Online payment verification is not implemented"
+            });
         }
 
+        if (order.paymentStatus === "Paid") {
+            return res.status(409).json({
+                message: "Order is already paid"
+            });
+        }
 
+        order.paymentMethod = "COD";
+        order.paymentStatus = "Pending";
 
         await order.save();
 
@@ -70,7 +73,7 @@ exports.createPayment = async (req, res) => {
 
         res.json({
 
-            message: "Payment successful",
+            message: "Cash on delivery selected",
 
             order
 
@@ -110,9 +113,16 @@ exports.getPaymentStatus = async (req, res) => {
     try {
 
 
-        const order = await Order.findById(
-            req.params.id
-        );
+        if (!mongoose.isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                message: "Invalid order ID"
+            });
+        }
+
+        const order = await Order.findOne({
+            _id: req.params.id,
+            user: req.user.id
+        });
 
 
 
