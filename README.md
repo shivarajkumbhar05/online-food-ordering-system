@@ -32,8 +32,9 @@ Set `MONGO_URI` in `.env` to your Atlas string, and remove the `mongo` service a
 
 ## Hosting frontend and API separately
 
-Set `API_BASE=https://api.yourdomain.com/api` (frontend container env, or edit `frontend/config.js`
-for static hosting such as Netlify) and `CORS_ORIGIN=https://your-frontend-domain` for the backend.
+Set `API_BASE=https://online-food-ordering-system-1-7aka.onrender.com/api` (frontend container env,
+or edit `frontend/config.js` for static hosting such as Netlify) and set `CORS_ORIGIN` to your
+frontend domain in the backend environment.
 
 ## Production checklist
 
